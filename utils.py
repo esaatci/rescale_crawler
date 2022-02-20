@@ -13,7 +13,7 @@ def getAbsoluteLinks(url):
   return list(filter(isAbsolute, urls))
 
 '''
-String -> [String]
+String -> String
 gets the html from a given url
 to simplify things, if a request fails then it'll return an empty string
 '''
@@ -43,3 +43,8 @@ def logUrls(location, urls):
   for url in urls:
     print("\t{}".format(url))
 
+'''
+  Validates the command line input
+'''
+def isValidInput(url):
+  return isAbsolute(url)
