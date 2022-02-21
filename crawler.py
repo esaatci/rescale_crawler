@@ -1,7 +1,6 @@
 from threading import Thread, BoundedSemaphore, Lock
 from utils import get_absolute_links, log_urls
 
-
 DEFAULT_DEPTH = 3
 
 
@@ -31,20 +30,25 @@ def crawler_parallel(url):
     urls_to_visit.append(url)
     while True:
         # get the lock to the urls
-        with urls_lock:
-            if urls_to_visit:
-                url_to_visit = urls_to_visit.pop()
-                with sem:
-                    # start a thread
-                    t = Thread(target=crawl_task, args=(url_to_visit,))
-                    t.start()
+        urls_lock.acquire()
+        if urls_to_visit:
+            url_to_visit = urls_to_visit.pop()
+            urls_lock.release()
+            sem.acquire()
+            t = Thread(target=crawl_task, args=(url_to_visit,))
+            t.start()
+        else:
+            urls_lock.release()
 
 
 def crawl_task(url):
     """thread task that runs in a spawned Thread"""
     abs_urls = get_absolute_links(url)
     log_urls(url, abs_urls)
-    with urls_lock:
-        for link in abs_urls:
-            urls_to_visit.append(link)
-        sem.release()
+
+    urls_lock.acquire()
+    for link in abs_urls:
+        urls_to_visit.append(link)
+    urls_lock.release()
+
+    sem.release()
