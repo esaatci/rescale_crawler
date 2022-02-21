@@ -5,7 +5,7 @@ from utils import get_absolute_links, log_urls
 DEFAULT_DEPTH = 3
 
 
-def crawler_single(url, depth=DEFAULT_DEPTH):
+def crawler_serial(url, depth=DEFAULT_DEPTH):
     """
     Single threaded
     """
@@ -13,7 +13,7 @@ def crawler_single(url, depth=DEFAULT_DEPTH):
         abs_urls = get_absolute_links(url)
         log_urls(url, abs_urls)
         for link in abs_urls:
-            crawler_single(link, depth - 1)
+            crawler_serial(link, depth - 1)
 
 
 urls_to_visit = []
@@ -26,7 +26,8 @@ MAX_THREAD_COUNT = 300
 def crawler_parallel(url):
     """crawler that runs in parallel"""
     # put the initial url to the visit
-    # since we haven't
+    # since we haven't started threading it's safe put things
+    # into the list without acquiring the lock
     urls_to_visit.append(url)
     with ThreadPoolExecutor(max_workers=MAX_THREAD_COUNT) as executor:
         while True:

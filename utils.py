@@ -17,7 +17,7 @@ def get_absolute_links(url):
 def get_html(url):
     """
     String -> String
-    gets the html from a given url
+    performs a get request to retrieve the html of a given url
     to simplify things, if a request fails then it'll return an empty string
     """
     response = requests.get(url)
@@ -37,6 +37,7 @@ def get_anchors(html):
 
 def get_url(anchor):
     """
+    String -> Bool
     Gets the href field from an anchor tag
     """
     return anchor.get("href")
@@ -44,6 +45,7 @@ def get_url(anchor):
 
 def is_absolute(url):
     """
+    String -> Bool
     checks if the given url is absolute
     """
     return bool(urlparse(url).netloc)
@@ -61,6 +63,7 @@ def log_urls(location, urls):
 
 def is_valid_input(url):
     """
+    String -> Bool
     Validates the command line input
     """
     return is_absolute(url)

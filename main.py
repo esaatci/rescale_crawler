@@ -1,5 +1,5 @@
 import sys
-from crawler import crawler_single, crawler_parallel
+from crawler import crawler_serial, crawler_parallel
 from utils import is_valid_input
 
 
@@ -16,7 +16,7 @@ def main():
     if cmd == "-p":
         crawler = crawler_parallel
     elif cmd == "-s":
-        crawler = crawler_single
+        crawler = crawler_serial
     else:
         print("unknown command")
         sys.exit(1)
