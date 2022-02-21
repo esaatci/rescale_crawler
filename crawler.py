@@ -1,4 +1,5 @@
-from threading import Thread, BoundedSemaphore, Lock
+from threading import Lock
+from concurrent.futures import ThreadPoolExecutor
 from utils import get_absolute_links, log_urls
 
 DEFAULT_DEPTH = 3
@@ -21,34 +22,25 @@ urls_lock = Lock()
 
 MAX_THREAD_COUNT = 300
 
-sem = BoundedSemaphore(MAX_THREAD_COUNT)
-
 
 def crawler_parallel(url):
     """crawler that runs in parallel"""
     # put the initial url to the visit
+    # since we haven't
     urls_to_visit.append(url)
-    while True:
-        # get the lock to the urls
-        urls_lock.acquire()
-        if urls_to_visit:
-            url_to_visit = urls_to_visit.pop()
-            urls_lock.release()
-            sem.acquire()
-            t = Thread(target=crawl_task, args=(url_to_visit,))
-            t.start()
-        else:
-            urls_lock.release()
+    with ThreadPoolExecutor(max_workers=MAX_THREAD_COUNT) as executor:
+        while True:
+            with urls_lock:
+                if urls_to_visit:
+                    url_to_visit = urls_to_visit.pop()
+                    executor.submit(crawl_task, url_to_visit)
 
 
 def crawl_task(url):
-    """thread task that runs in a spawned Thread"""
+    """task that runs in the thread pool"""
     abs_urls = get_absolute_links(url)
     log_urls(url, abs_urls)
 
-    urls_lock.acquire()
-    for link in abs_urls:
-        urls_to_visit.append(link)
-    urls_lock.release()
-
-    sem.release()
+    with urls_lock:
+        for link in abs_urls:
+            urls_to_visit.append(link)
