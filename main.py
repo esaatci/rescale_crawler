@@ -1,6 +1,7 @@
 import sys
 from crawler import crawler_serial, crawler_parallel
 from utils import is_valid_input
+import signal
 
 
 def main():
@@ -29,5 +30,10 @@ def main():
     crawler(url)
 
 
+def handler(signum, frame):
+    sys.exit(0)
+
+
 if __name__ == "__main__":
+    signal.signal(signal.SIGINT, handler)
     main()
