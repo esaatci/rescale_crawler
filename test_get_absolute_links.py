@@ -40,7 +40,7 @@ mock_html = """
 """
 
 
-class UtilsTests(unittest.TestCase):
+class UtilsTest(unittest.TestCase):
     """
     I added a unit test for get_absolute_links
     Arguably it's the most important function in the project
