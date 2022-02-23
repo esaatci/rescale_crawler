@@ -9,12 +9,14 @@ I tried to keep the implementation as simple as possible. Most of the code is wr
 
 # Content
 
-There are 4 python files in this project which are:
+There are 6 python files in this project which are:
 
 1. crawler.py
 2. main.py
 3. utils.py
 4. test_get_absolute_links.py
+5. LRUCache.py
+6. test_LRUCache.py
 
 ### crawler.py
 Contains two crawlers, one serial and one parallel. I decided to keep the serial crawler to see the evolution between two different versions.
@@ -31,6 +33,12 @@ Utility functions that are used by the crawlers and the main function. Url fetch
 
 ### test_get_absolute_links.py
 Contains a unit test to validate getting links from a url
+
+### LRUCache.py
+Contains a cache to keep track of visited urls
+
+### test_LRUCache.py
+Contains unit tests for the LRUCache
 
 # Parallelization
 The parallelization is achieved by using Python's built-in `ThreadPoolExecutor` to implement a thread pool. Maximum number of threads is set to 300. This number is selected arbitrarily. Threads access a url, retrieve the links and adds the next batch of urls to a shared list. The main thread (crawler_parallel) and tasks communicate using this lifo queue. Access to this is controlled by `Lock` object in python.
