@@ -41,7 +41,7 @@ Contains a cache to keep track of visited urls
 Contains unit tests for the LRUCache
 
 # Parallelization
-The parallelization is achieved by using Python's built-in `ThreadPoolExecutor` to implement a thread pool. Maximum number of threads is set to 300. This number is selected arbitrarily. Threads access a url, retrieve the links and adds the next batch of urls to a shared list. The main thread (crawler_parallel) and tasks communicate using this lifo queue. Access to this is controlled by `Lock` object in python.
+The parallelization is achieved by using Python's built-in `ThreadPoolExecutor` to implement a thread pool. Threads access a url, retrieve the links and sends the next batch of urls to the main thread and submit logging data to the Daemon thread
 
 I chose using the threadpool over the `multiprocessing` library because this program is mostly I/O bound.
 
